@@ -10,19 +10,23 @@ Sitio web estático (HTML/CSS/JS, sin build) para una firma de contabilidad.
 - `assets/favicon.svg` — ícono del sitio
 - `_headers` — cabeceras de seguridad para Cloudflare Pages
 
-## Despliegue en Cloudflare Pages
+## Despliegue en Cloudflare
 
-Como es un sitio estático, no requiere comando de build:
+El proyecto trae `wrangler.jsonc` configurado para servir los archivos como **Static Assets** de un Cloudflare Worker, que es el modo que usa el dashboard cuando el servicio aparece bajo "Workers & Pages" → tipo **Workers**.
 
-1. En Cloudflare Dashboard → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**, selecciona este repositorio.
-2. Configuración de build:
-   - **Framework preset:** None
-   - **Build command:** (déjalo vacío)
-   - **Build output directory:** `/`
-3. Guarda y despliega. Cada push a la rama conectada disparará un nuevo despliegue.
+- No requiere build command (el sitio es HTML/CSS/JS plano).
+- Al conectar el repo, Cloudflare detecta `wrangler.jsonc` y despliega los assets automáticamente en cada push.
 
 También puedes desplegar localmente con Wrangler:
 
 ```bash
-npx wrangler pages deploy . --project-name=holacontable
+npx wrangler deploy
 ```
+
+### Si el proyecto es de tipo "Pages" (no Workers)
+
+1. En Cloudflare Dashboard → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**.
+2. Configuración de build:
+   - **Framework preset:** None
+   - **Build command:** (déjalo vacío)
+   - **Build output directory:** `/`
