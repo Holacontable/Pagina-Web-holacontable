@@ -442,7 +442,7 @@
             <div class="field"><label for="telefono">Teléfono / WhatsApp</label><input id="telefono" name="telefono" type="tel" autocomplete="tel" placeholder="+57"></div>
             <div class="field"><label for="servicio">Servicio de interés</label><select id="servicio" name="servicio"><option value="">Selecciona un servicio</option><option>Contabilidad</option><option>Asesoría tributaria</option><option>Declaraciones de renta</option><option>Nómina y seguridad social</option><option>Creación y formalización de empresas</option><option>Consultoría financiera</option><option>Otro</option></select></div>
             <div class="field full"><label for="mensaje">Cuéntanos brevemente qué necesitas *</label><textarea id="mensaje" name="mensaje" placeholder="Escribe aquí tu consulta..." required></textarea></div>
-            <div class="field full"><button class="btn btn-primary" type="submit">Preparar mensaje <span class="arrow">↗</span></button><p class="form-note">Este formulario abrirá tu aplicación de correo para que puedas revisar y enviar el mensaje. No envía datos automáticamente.</p></div>
+            <div class="field full"><button class="btn btn-primary" type="submit">Enviar por WhatsApp <span class="arrow">↗</span></button><p class="form-note">Al enviar, se abrirá WhatsApp con tu mensaje ya redactado para que lo confirmes y lo envíes.</p></div>
           </div>
         </form>
       </div>
@@ -463,7 +463,9 @@
   </footer>
 
   <!-- Cambia el número de WhatsApp en el enlace por el número real, con indicativo de país y sin + ni espacios. -->
-  <a class="whatsapp" href="https://wa.me/573025221040?text=Hola%20Holacontable%2C%20quiero%20recibir%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">◔</a>
+  <a class="whatsapp" href="https://wa.me/573025221040?text=Hola%20Holacontable%2C%20quiero%20recibir%20informaci%C3%B3n%20sobre%20sus%20servicios." target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">
+    <svg viewBox="0 0 32 32" width="30" height="30" fill="currentColor" aria-hidden="true"><path d="M16.004 3C9.377 3 4 8.373 4 15c0 2.34.666 4.523 1.82 6.38L4 29l7.82-1.77A11.93 11.93 0 0 0 16.004 27C22.63 27 28 21.627 28 15S22.63 3 16.004 3Zm0 21.6c-1.98 0-3.82-.58-5.37-1.58l-.385-.24-4.64 1.05 1.08-4.52-.26-.4A9.56 9.56 0 0 1 5.4 15c0-5.85 4.76-10.6 10.604-10.6 5.84 0 10.596 4.75 10.596 10.6 0 5.85-4.756 10.6-10.596 10.6Zm5.84-7.94c-.32-.16-1.9-.94-2.19-1.04-.294-.106-.508-.16-.72.16-.214.32-.83 1.04-1.018 1.254-.187.213-.374.24-.694.08-.32-.16-1.35-.498-2.572-1.59-.95-.848-1.59-1.894-1.777-2.214-.187-.32-.02-.494.14-.654.144-.144.32-.374.48-.56.16-.187.213-.32.32-.534.107-.213.054-.4-.027-.56-.08-.16-.72-1.734-.986-2.374-.26-.624-.524-.54-.72-.55l-.613-.01c-.213 0-.56.08-.853.4-.293.32-1.12 1.094-1.12 2.668s1.146 3.094 1.306 3.308c.16.213 2.253 3.44 5.46 4.823.763.33 1.358.527 1.822.675.766.243 1.462.21 2.012.127.614-.092 1.9-.776 2.168-1.526.267-.75.267-1.394.187-1.527-.08-.133-.293-.213-.613-.373Z"/></svg>
+  </a>
 
   <script>
     // Menú adaptable para celulares
@@ -497,19 +499,23 @@
       select.value = link.dataset.service;
     }));
 
-    // Formulario: prepara un correo, no almacena ni envía datos en este sitio estático.
+    // Formulario: arma el mensaje y lo envía directo por WhatsApp, sin pasar por correo.
+    const WHATSAPP_NUMBER = '573025221040';
     document.getElementById('contactForm').addEventListener('submit', event => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
-      const subject = encodeURIComponent('Consulta web Holacontable - ' + (data.get('servicio') || 'Asesoría'));
-      const body = encodeURIComponent(
-        'Nombre: ' + data.get('nombre') + '\\n' +
-        'Correo: ' + data.get('correo') + '\\n' +
-        'Teléfono: ' + (data.get('telefono') || 'No indicado') + '\\n' +
-        'Servicio: ' + (data.get('servicio') || 'No seleccionado') + '\\n\\n' +
-        'Mensaje:\\n' + data.get('mensaje')
-      );
-      window.location.href = 'mailto:info@holacontable.win?subject=' + subject + '&body=' + body;
+      const lineas = [
+        'Hola Holacontable, quiero información sobre sus servicios.',
+        'Nombre: ' + data.get('nombre'),
+        'Correo: ' + data.get('correo'),
+        'Teléfono: ' + (data.get('telefono') || 'No indicado'),
+        'Servicio: ' + (data.get('servicio') || 'No seleccionado'),
+        '',
+        'Mensaje: ' + data.get('mensaje')
+      ];
+      const texto = encodeURIComponent(lineas.join('\n'));
+      window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + texto, '_blank');
+      event.currentTarget.reset();
     });
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
