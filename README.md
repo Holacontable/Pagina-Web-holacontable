@@ -1,32 +1,19 @@
 # HolaContable — Página Web
 
-Sitio web estático (HTML/CSS/JS, sin build) para una firma de contabilidad.
+Sitio estático (HTML/CSS/JS, sin build) para una firma de contabilidad.
 
 ## Estructura
-
 - `index.html` — contenido de la página
 - `styles.css` — estilos
-- `script.js` — menú móvil, formulario de contacto y año dinámico
-- `assets/favicon.svg` — ícono del sitio
-- `_headers` — cabeceras de seguridad para Cloudflare Pages
+- `script.js` — menú móvil, cabecera, formulario por WhatsApp y año dinámico
+- `assets/logo.png`, `assets/favicon.svg` — logo e ícono
+- `404.html` — página de error
+- `_headers`, `wrangler.jsonc`, `.assetsignore` — despliegue en Cloudflare
 
-## Despliegue en Cloudflare
+## Flujo de trabajo
+- `main` es la rama que se publica en holacontable.com (Cloudflare despliega en cada push).
+- Los cambios nuevos se hacen en una rama aparte y se fusionan a `main` cuando están aprobados.
 
-El proyecto trae `wrangler.jsonc` configurado para servir los archivos como **Static Assets** de un Cloudflare Worker, que es el modo que usa el dashboard cuando el servicio aparece bajo "Workers & Pages" → tipo **Workers**.
-
-- No requiere build command (el sitio es HTML/CSS/JS plano).
-- Al conectar el repo, Cloudflare detecta `wrangler.jsonc` y despliega los assets automáticamente en cada push.
-
-También puedes desplegar localmente con Wrangler:
-
-```bash
-npx wrangler deploy
-```
-
-### Si el proyecto es de tipo "Pages" (no Workers)
-
-1. En Cloudflare Dashboard → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**.
-2. Configuración de build:
-   - **Framework preset:** None
-   - **Build command:** (déjalo vacío)
-   - **Build output directory:** `/`
+## Despliegue
+Cloudflare detecta `wrangler.jsonc` y publica los archivos como Static Assets. No requiere comando de compilación.
+Localmente: `npx wrangler deploy`.

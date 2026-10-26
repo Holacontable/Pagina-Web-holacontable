@@ -1,45 +1,56 @@
-document.getElementById("year").textContent = new Date().getFullYear();
+    // Menú adaptable para celulares
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    menuToggle.addEventListener('click', () => {
+      const open = navLinks.classList.toggle('open');
+      menuToggle.setAttribute('aria-expanded', String(open));
+      menuToggle.textContent = open ? '×' : '☰';
+    });
+    navLinks.querySelectorAll('a').forEach(link => link.addEventListener('click', () => {
+      navLinks.classList.remove('open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.textContent = '☰';
+    }));
 
-const navToggle = document.getElementById("navToggle");
-const mainNav = document.getElementById("mainNav");
+    // Animaciones discretas al desplazarse
+    const revealObserver = new IntersectionObserver(entries => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
-navToggle.addEventListener("click", () => {
-  const isOpen = mainNav.classList.toggle("open");
-  navToggle.setAttribute("aria-expanded", String(isOpen));
-});
+    // Precarga el servicio seleccionado cuando alguien pulsa una tarjeta
+    document.querySelectorAll('[data-service]').forEach(link => link.addEventListener('click', () => {
+      const select = document.getElementById('servicio');
+      select.value = link.dataset.service;
+    }));
 
-mainNav.querySelectorAll("a").forEach((link) => {
-  link.addEventListener("click", () => {
-    mainNav.classList.remove("open");
-    navToggle.setAttribute("aria-expanded", "false");
-  });
-});
-
-const WHATSAPP_NUMBER = "573025221040";
-
-const form = document.getElementById("contactForm");
-const formNote = document.getElementById("formNote");
-
-form.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const data = new FormData(form);
-  const nombre = data.get("nombre") || "";
-  const empresa = data.get("empresa") || "";
-  const correo = data.get("correo") || "";
-  const telefono = data.get("telefono") || "";
-  const mensaje = data.get("mensaje") || "";
-
-  const lineas = [
-    `Hola, soy ${nombre}.`,
-    empresa && `Empresa: ${empresa}`,
-    correo && `Correo: ${correo}`,
-    telefono && `Teléfono: ${telefono}`,
-    mensaje && `Mensaje: ${mensaje}`,
-  ].filter(Boolean);
-
-  const texto = encodeURIComponent(lineas.join("\n"));
-  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${texto}`, "_blank");
-
-  formNote.textContent = "Te estamos llevando a WhatsApp para enviar tu solicitud...";
-  form.reset();
-});
+    // Formulario: arma el mensaje y lo envía directo por WhatsApp, sin pasar por correo.
+    const WHATSAPP_NUMBER = '573025221040';
+    document.getElementById('contactForm').addEventListener('submit', event => {
+      event.preventDefault();
+      const data = new FormData(event.currentTarget);
+      const lineas = [
+        'Hola Holacontable, quiero información sobre sus servicios.',
+        'Nombre: ' + data.get('nombre'),
+        'Correo: ' + data.get('correo'),
+        'Teléfono: ' + (data.get('telefono') || 'No indicado'),
+        'Servicio: ' + (data.get('servicio') || 'No seleccionado'),
+        '',
+        'Mensaje: ' + data.get('mensaje')
+      ];
+      const texto = encodeURIComponent(lineas.join('\n'));
+      window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + texto, '_blank');
+      event.currentTarget.reset();
+    });
+    // Cabecera: fondo sólido al desplazarse
+const siteHeader = document.getElementById('siteHeader')
+const onScroll = () => siteHeader.classList.toggle('scrolled', window.scrollY > 40)
+window.addEventListener('scroll', onScroll, { passive: true })
+onScroll()
+document.getElementById('year').textContent = new Date().getFullYear();
+  
